@@ -13,7 +13,7 @@ module V1
     end
     get 'repositories/:id' do
       begin
-        repo = Repository.find(params[:id])
+        repo = Repository.find_by_id(params[:id])
         if repo
           repo.to_json
         else
@@ -34,6 +34,23 @@ module V1
         )
         if repo.save
           repo.to_json
+        else
+          error! repo.errors
+        end
+      rescue => e
+        error! e.message
+      end
+    end
+
+    params do
+      requires :id, type: Integer, desc: ''
+    end
+    delete '/repositories/:id' do
+      begin
+        require 'pry'; binding.pry
+        repo = Repository.find_by_id(params[:id])
+        if repo
+          repo.destroy
         else
           error! repo.errors
         end
