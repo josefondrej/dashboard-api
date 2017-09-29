@@ -15,19 +15,19 @@ class Repository < ApplicationRecord
 
     attr_reader :url
     def initialize(url:)
-      @url = url
+      @url = url.gsub('/', '%2F')
     end
 
     def description
-      request = "#{BASE_URL}projects/#{url}?statistics=true&private_token=#{ENV['PRIVATE_TOKEN']}"
+      request = "#{BASE_URL}projects/#{url}?statistics=true&private_token=mGiPmcWuNsBrA5q8awUz"
       response = HTTParty.get(request, timeout: 5)
-      response.body['description']
+      (JSON.parse response.body)['description']
     end
 
     def self.repositories
-      request = "#{BASE_URL}projects?private_token=#{ENV['PRIVATE_TOKEN']}"
+      request = "#{BASE_URL}projects?private_token=#{ENV.fetch('PRIVATE_TOKEN')}"
       response = HTTParty.get(request, timeout: 5)
-      response.body
+      (JSON.parse response.body)
     end
   end
 

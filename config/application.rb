@@ -19,7 +19,7 @@ Bundler.require(*Rails.groups)
 module DashboardApi
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.i18n.default_locale = :de
+    config.i18n.default_locale = :en
     config.load_defaults 5.1
 
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
