@@ -47,7 +47,6 @@ module V1
     end
     delete '/repositories/:id' do
       begin
-        require 'pry'; binding.pry
         repo = Repository.find_by_id(params[:id])
         if repo
           repo.destroy
