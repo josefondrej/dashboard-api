@@ -1,10 +1,10 @@
-# Manual Printer API
+# Dashboard-API
 
 ## Installation
 
 1. Clone this project
-2. Clone the ManualPrinter
-3. Run `bundle`
+2. Run `bundle`
+3. Create .env file containing gitlab's `PRIVATE_TOKEN`
 
  ## Usage
 
