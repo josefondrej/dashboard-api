@@ -3,13 +3,6 @@ class Repository < ApplicationRecord
 
   before_save :load_data
 
-  private
-
-  def load_data
-    self.name = url.split('/').last
-    self.description = ""
-  end
-
   def to_json
     {
       id: id,
@@ -18,4 +11,12 @@ class Repository < ApplicationRecord
       url: url
     }
   end
+
+  private
+
+  def load_data
+    self.name = url.split('/').last
+    self.description = ""
+  end
+
 end
