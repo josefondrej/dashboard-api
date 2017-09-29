@@ -32,8 +32,8 @@ module V1
         repo = Repository.new(
           url: params[:url]
         )
-        if repo.valid?
-          repo.save
+        if repo.save
+          repo.to_json
         else
           error! repo.errors
         end
