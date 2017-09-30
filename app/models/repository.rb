@@ -24,10 +24,10 @@ class Repository < ApplicationRecord
       @url = url.gsub('/', '%2F')
     end
 
-    def description
+    def repository_details
       request = "#{BASE_URL}projects/#{url}?statistics=true&private_token=#{ENV.fetch('PRIVATE_TOKEN')}"
       response = HTTParty.get(request, timeout: 5)
-      (JSON.parse response.body)['description']
+      (JSON.parse response.body)
     end
 
     def self.repositories
@@ -50,7 +50,8 @@ class Repository < ApplicationRecord
   end
 
   def load_data
-    self.description = GitlabAPI.new(url: url).description
+    self.description = GitlabAPI.new(url: url).repository_details['description']
+    self.name = GitlabAPI.new(url: url).repository_details['name']
   end
 
 end
