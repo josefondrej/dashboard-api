@@ -11,7 +11,7 @@ class Deployment < ApplicationRecord
   def to_json
     {
         type: kind,
-        url: url,
+        url: server.url,
         status: repository.status_json
     }
   end
