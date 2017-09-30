@@ -8,14 +8,10 @@ class Repository < ApplicationRecord
   attr_accessor :deployments_params
 
   def to_json
-    current_status = status
     {
       id: id,
       name: name,
-      status: {
-        responseTime: current_status.response_time,
-        message: current_status.message
-      },
+      status: status_json,
       detailUrl: "repositories/#{id}",
       productionUrl: production_deployment&.url || ''
     }
@@ -25,8 +21,33 @@ class Repository < ApplicationRecord
     to_json.merge({
         description: description,
         url: url,
-        lastActivity: GitlabAPI.new(url: url).repository_details['last_activity_at']
+        lastActivity: GitlabAPI.new(url: url).repository_details['last_activity_at'],
+        deployments: deployments.map(&:to_json)
     })
+  end
+
+  def status_json
+    status = if production_deployment
+              server = production_deployment
+              if server.up?
+                PingStatus.new(
+                    response_time: server.ping,
+                    message: 'OK'
+                )
+              else
+                PingStatus.new(
+                    response_time: server.ping,
+                    message: 'FAIL'
+                )
+              end
+            else
+              PingStatus.new(message: 'NO_PRODUCTION')
+            end
+
+    {
+        responseTime: status.response_time,
+        message: status.message
+    }
   end
 
   private
@@ -35,24 +56,6 @@ class Repository < ApplicationRecord
     deployments.find(&:production?)&.server
   end
 
-  def status
-    if production_deployment
-      server = production_deployment
-      if server.up?
-        PingStatus.new(
-          response_time: server.ping,
-          message: 'OK'
-        )
-      else
-        PingStatus.new(
-          response_time: server.ping,
-          message: 'FAIL'
-        )
-      end
-    else
-      PingStatus.new(message: 'NO_PRODUCTION')
-    end
-  end
 
   def assign_deployments
     deployments_params.each do |deployments_param|
