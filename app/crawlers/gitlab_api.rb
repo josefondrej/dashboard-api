@@ -13,7 +13,8 @@ class GitlabAPI
   end
 
   def self.repositories
-    request = "#{BASE_URL}projects?private_token=#{ENV.fetch('PRIVATE_TOKEN')}"
+    # TODO Handle more than 100 repos (100 is max from gitlab api)
+    request = "#{BASE_URL}projects?private_token=#{ENV.fetch('PRIVATE_TOKEN')}&per_page=100"
     response = HTTParty.get(request, timeout: 5)
     (JSON.parse response.body)
   end
