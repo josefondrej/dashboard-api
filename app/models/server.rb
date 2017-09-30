@@ -4,8 +4,10 @@ class Server < ApplicationRecord
 
   def to_json
     {
+      id: id,
       url: url,
-      name: name
+      name: name,
+      detailUrl: "servers/#{id}"
     }
   end
 
