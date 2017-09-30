@@ -24,13 +24,27 @@ module V1
       end
     end
 
+    # Sample request via CURL
+    #
+    #   curl -X POST http://localhost:9292/api/v1/repositories \
+    #   -H 'accept: application/json' \
+    #   -H 'content-type: application/json' \
+    #   -d '{
+    #  "url": "swissdrg/dashboard",
+    #  "deployments":[{"kind":"production", "url":"localhost"}]
+    # }'
     params do
-      requires :url, type: String, desc: 'Url of target repository'
+      optional :url, type: String, desc: 'Url of target repository'
+      optional :deployments, type: Array do
+        optional :kind, type: String
+        optional :url, type: String
+      end
     end
     post '/repositories' do
       begin
         repo = Repository.new(
-          url: params[:url]
+          url: params[:url],
+          deployments_params: params[:deployments]
         )
         if repo.save
           repo.to_json

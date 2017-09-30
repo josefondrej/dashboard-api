@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20170930080437) do
   create_table "deployments", force: :cascade do |t|
     t.integer "repository_id", null: false
     t.integer "server_id", null: false
-    t.string "type"
+    t.string "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -30,7 +30,6 @@ ActiveRecord::Schema.define(version: 20170930080437) do
 
   create_table "servers", force: :cascade do |t|
     t.string "name"
-    t.string "type"
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
