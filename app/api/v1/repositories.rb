@@ -34,7 +34,7 @@ module V1
     #  "deployments":[{"kind":"production", "url":"localhost"}]
     # }'
     params do
-      requires :repository do
+      requires :repository, type: Hash do
         requires :url, type: String, desc: 'Url of target repository'
         optional :deployments, type: Array do
           optional :kind, type: String
