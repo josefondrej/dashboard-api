@@ -23,7 +23,6 @@ class Server < ApplicationRecord
   end
 
   def up?
-    check = Net::Ping::External.new(url)
-    check.ping?
+    ping > 0
   end
 end
