@@ -22,6 +22,6 @@ class GitlabAPI
   def self.available
     repos_db = Repository.all.map(&:url)
     repos_gitlab = repositories.map{ |repo| repo['path_with_namespace']}
-    repos_gitlab - repos_db
+    (repos_gitlab - repos_db).sort_by{ |r| r.downcase}
   end
 end
