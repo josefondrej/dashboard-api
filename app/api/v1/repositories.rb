@@ -34,17 +34,19 @@ module V1
     #  "deployments":[{"kind":"production", "url":"localhost"}]
     # }'
     params do
-      optional :url, type: String, desc: 'Url of target repository'
-      optional :deployments, type: Array do
-        optional :kind, type: String
-        optional :url, type: String
+      requires :repository do
+        requires :url, type: String, desc: 'Url of target repository'
+        optional :deployments, type: Array do
+          optional :kind, type: String
+          optional :url, type: String
+        end
       end
     end
     post '/repositories' do
       begin
         repo = Repository.new(
-          url: params[:url],
-          deployments_params: params[:deployments]
+          url: params[:repository][:url],
+          deployments_params: params[:repository][:deployments]
         )
         if repo.save
           repo.to_json
