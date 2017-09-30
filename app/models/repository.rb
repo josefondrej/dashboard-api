@@ -12,21 +12,32 @@ class Repository < ApplicationRecord
     {
       id: id,
       name: name,
-      description: description,
-      url: url,
       status: {
-        response_time: current_status.response_time,
+        responseTime: current_status.response_time,
         message: current_status.message
       },
-      detailUrl: "repositories/#{id}"
+      detailUrl: "repositories/#{id}",
+      productionUrl: production_deployment&.url || ''
     }
+  end
+
+  def to_json_extended
+    to_json.merge({
+        description: description,
+        url: url,
+        lastActivity: GitlabAPI.new(url: url).repository_details['last_activity_at']
+    })
   end
 
   private
 
+  def production_deployment
+    deployments.find(&:production?)&.server
+  end
+
   def status
-    if deployments.any?(&:production?)
-      server = deployments.find(&:production?).server
+    if production_deployment
+      server = production_deployment
       if server.up?
         PingStatus.new(
           response_time: server.ping,

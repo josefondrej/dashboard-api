@@ -23,7 +23,7 @@ module V1
       begin
         repo = Repository.find_by_id(params[:id])
         if repo
-          repo.to_json
+          repo.to_json_extended
         else
           error!("No repository with id #{params[:id]} found.", 404)
         end
