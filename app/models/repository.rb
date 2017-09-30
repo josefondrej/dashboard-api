@@ -41,7 +41,7 @@ class Repository < ApplicationRecord
   private
 
   def status_ok?
-    if deployments.any?(&:production?:)
+    if deployments.any?(&:production?)
       server = deployments.find(&:production?).server
       server.up?
     else
