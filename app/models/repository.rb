@@ -25,7 +25,7 @@ class Repository < ApplicationRecord
     end
 
     def description
-      request = "#{BASE_URL}projects/#{url}?statistics=true&private_token=mGiPmcWuNsBrA5q8awUz"
+      request = "#{BASE_URL}projects/#{url}?statistics=true&private_token=#{ENV.fetch('PRIVATE_TOKEN')}"
       response = HTTParty.get(request, timeout: 5)
       (JSON.parse response.body)['description']
     end
