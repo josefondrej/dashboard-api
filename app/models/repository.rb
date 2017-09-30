@@ -13,7 +13,8 @@ class Repository < ApplicationRecord
       name: name,
       description: description,
       url: url,
-      status: status_ok?
+      status: status_ok?,
+      detailUrl: "repositories/#{id}"
     }
   end
 
