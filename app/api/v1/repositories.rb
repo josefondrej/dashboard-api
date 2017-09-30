@@ -8,7 +8,7 @@ module V1
       Repository.all.map(&:to_json)
     end
 
-    get 'repositories/available' do
+    get 'available_repositories/' do
       begin
         Repository::GitlabAPI.available
       rescue => e
