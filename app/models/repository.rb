@@ -1,5 +1,5 @@
 class Repository < ApplicationRecord
-  has_many :deployments
+  has_many :deployments, dependent: :destroy
   has_many :servers, through: :deployments
   accepts_nested_attributes_for :deployments
   before_save :load_data
