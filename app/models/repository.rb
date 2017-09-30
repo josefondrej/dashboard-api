@@ -12,7 +12,8 @@ class Repository < ApplicationRecord
       id: id,
       name: name,
       description: description,
-      url: url
+      url: url,
+      status: status_ok?
     }
   end
 
@@ -38,6 +39,15 @@ class Repository < ApplicationRecord
   end
 
   private
+
+  def status_ok?
+    if deployments.any?(&:production?:)
+      server = deployments.find(&:production?).server
+      server.up?
+    else
+      false
+    end
+  end
 
   def assign_deployments
     deployments_params.each do |deployments_param|
