@@ -8,24 +8,46 @@ class Repository < ApplicationRecord
   attr_accessor :deployments_params
 
   def to_json
+    current_status = status
     {
       id: id,
       name: name,
       description: description,
       url: url,
-      status: status_ok?,
+      status: {
+        response_time: current_status.response_time,
+        message: current_status.message
+      },
       detailUrl: "repositories/#{id}"
     }
   end
 
+  class Status
+    attr_reader :response_time, :message
+    def initialize(response_time: -1, message:)
+      @response_time = response_time
+      @message = message
+    end
+  end
+
   private
 
-  def status_ok?
+  def status
     if deployments.any?(&:production?)
       server = deployments.find(&:production?).server
-      server.up?
+      if server.up?
+        Status.new(
+          response_time: server.ping,
+          message: 'OK'
+        )
+      else
+        Status.new(
+          response_time: server.ping,
+          message: 'FAIL'
+        )
+      end
     else
-      false
+      Status.new(message: 'NO_PRODUCTION')
     end
   end
 
