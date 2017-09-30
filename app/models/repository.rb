@@ -36,6 +36,12 @@ class Repository < ApplicationRecord
       response = HTTParty.get(request, timeout: 5)
       (JSON.parse response.body)
     end
+
+    def self.available
+      repos_db = Repository.all.map(&:url)
+      repos_gitlab = repositories.map{ |repo| repo['path_with_namespace']}
+      repos_gitlab - repos_db
+    end
   end
 
   private

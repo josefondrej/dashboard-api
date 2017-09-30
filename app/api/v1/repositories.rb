@@ -8,6 +8,14 @@ module V1
       Repository.all.map(&:to_json)
     end
 
+    get 'repositories/available' do
+      begin
+        Repository::GitlabAPI.available
+      rescue => e
+        error! e.message
+      end
+    end
+
     params do
       requires :id, type: Integer, desc: ''
     end
