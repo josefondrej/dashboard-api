@@ -22,32 +22,24 @@ class Repository < ApplicationRecord
     }
   end
 
-  class Status
-    attr_reader :response_time, :message
-    def initialize(response_time: -1, message:)
-      @response_time = response_time
-      @message = message
-    end
-  end
-
   private
 
   def status
     if deployments.any?(&:production?)
       server = deployments.find(&:production?).server
       if server.up?
-        Status.new(
+        PingStatus.new(
           response_time: server.ping,
           message: 'OK'
         )
       else
-        Status.new(
+        PingStatus.new(
           response_time: server.ping,
           message: 'FAIL'
         )
       end
     else
-      Status.new(message: 'NO_PRODUCTION')
+      PingStatus.new(message: 'NO_PRODUCTION')
     end
   end
 
@@ -65,5 +57,4 @@ class Repository < ApplicationRecord
     self.description = GitlabAPI.new(url: url).repository_details['description']
     self.name = GitlabAPI.new(url: url).repository_details['name']
   end
-
 end
