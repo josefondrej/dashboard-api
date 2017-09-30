@@ -10,12 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170929154741) do
+ActiveRecord::Schema.define(version: 20170930080437) do
+
+  create_table "deployments", force: :cascade do |t|
+    t.integer "repository_id", null: false
+    t.integer "server_id", null: false
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "repositories", force: :cascade do |t|
     t.string "url"
     t.string "name"
     t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "servers", force: :cascade do |t|
+    t.string "name"
+    t.string "type"
+    t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

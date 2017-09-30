@@ -1,4 +1,5 @@
 class Repository < ApplicationRecord
+  has_many :servers, through: :deployments
   before_save :load_data
 
   def to_json
