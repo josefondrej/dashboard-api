@@ -27,7 +27,7 @@ module V1
     params do
       requires :url, type: String, desc: 'Url of target repository'
     end
-    post '/repository' do
+    post '/repositories' do
       begin
         repo = Repository.new(
           url: params[:url]
