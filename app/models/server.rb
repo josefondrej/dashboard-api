@@ -8,4 +8,9 @@ class Server < ApplicationRecord
       name: name
     }
   end
+
+  def up?
+    check = Net::Ping::External.new(url)
+    check.ping?
+  end
 end
