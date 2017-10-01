@@ -18,11 +18,14 @@ class Repository < ApplicationRecord
   end
 
   def to_json_extended
+    gitlab = GitlabAPI.new(url: url)
     to_json.merge({
         description: description,
         url: url,
-        lastActivity: GitlabAPI.new(url: url).repository_details['last_activity_at'],
-        deployments: deployments.map(&:to_json)
+        lastActivity: gitlab.repository_details['last_activity_at'],
+        deployments: deployments.map(&:to_json),
+        merge_requests_count: gitlab.count_merge_requests,
+        open_merge_requests_count: gitlab.count_open_merge_requests
     })
   end
 
