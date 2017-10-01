@@ -62,6 +62,7 @@ class Repository < ApplicationRecord
 
   def assign_deployments
     deployments_params.each do |deployments_param|
+      raise "Url empty for deployment #{deployments_param['kind']}" if deployments_param['url'].blank?
       begin
         server_ip = IPSocket::getaddress deployments_param['url'].gsub(/http(s){0,1}:\/\//, '')
       rescue
