@@ -47,7 +47,7 @@ module V1
         optional :deployments, type: Array, desc: 'List of Apps on deployed server' do
           optional :kind, type: String, desc: 'Either production or stagging'
           optional :url, type: String, desc: 'Url of deployment'
-          optional :server_ip, type: String
+          optional :serverIp, type: String
         end
       end
     end

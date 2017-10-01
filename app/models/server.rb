@@ -8,7 +8,8 @@ class Server < ApplicationRecord
       ip: ip,
       name: name,
       description: description,
-      detailUrl: "servers/#{id}"
+      detailUrl: "servers/#{id}",
+      ping: ping
     }
   end
 

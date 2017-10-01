@@ -5,7 +5,7 @@ module V1
     format :json
 
     get '/servers/' do
-      Servers.all.map(&:to_json)
+      Server.all.map(&:to_json)
     end
 
     params do
@@ -50,16 +50,15 @@ module V1
       end
     end
     post '/servers/' do
-
       begin
         server = Server.new(
           ip: params[:server][:ip],
           name: params[:server][:name],
-          description: params[:server][:description] || 'no description'
+          description: params[:server][:description]
         )
 
         if server.save
-          server
+          server.to_json
         else
           error! server.errors
         end

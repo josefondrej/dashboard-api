@@ -31,7 +31,7 @@ class Repository < ApplicationRecord
 
   def status_json
     status = if production_deployment
-              server = production_deployment
+              server = production_deployment.server
               if server.up?
                 PingStatus.new(
                     response_time: server.ping,
@@ -56,15 +56,15 @@ class Repository < ApplicationRecord
   private
 
   def production_deployment
-    deployments.find(&:production?)&.server
+    deployments.find(&:production?)
   end
 
 
   def assign_deployments
     deployments_params.each do |deployments_param|
-      server_ip = deployments_param['ip']
-      server = Server.find(ip: server_ip)
-      raise "Server with IP #{server_ip} not found."
+      server_ip = deployments_param['serverIp']
+      server = Server.find_by_ip(server_ip)
+      raise "Server with IP #{server_ip} not found." unless server
       self.servers << server
       deployment = deployments.find_by_server_id(server.id)
       deployment.kind = deployments_param['kind']
