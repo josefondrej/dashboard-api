@@ -24,8 +24,8 @@ class Repository < ApplicationRecord
                       url: url,
                       lastActivity: gitlab.repository_details['last_activity_at'],
                       deployments: deployments.map(&:to_json),
-                      merge_requests_count: gitlab.count_merge_requests,
-                      open_merge_requests_count: gitlab.count_open_merge_requests
+                      mergeRequestsCount: gitlab.count_merge_requests,
+                      openMergeRequestsCount: gitlab.count_open_merge_requests
                   })
   end
 
