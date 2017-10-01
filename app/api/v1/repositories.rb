@@ -43,10 +43,11 @@ module V1
     # }'
     params do
       requires :repository, type: Hash do
-        requires :url, type: String, desc: 'Url of target repository'
-        optional :deployments, type: Array do
-          optional :kind, type: String
-          optional :url, type: String
+        requires :url, type: String, desc: 'Gitlab url of repository'
+        optional :deployments, type: Array, desc: 'List of Apps on deployed server' do
+          optional :kind, type: String, desc: 'Either production or stagging'
+          optional :url, type: String, desc: 'Url of deployment'
+          optional :server_ip, type: String
         end
       end
     end

@@ -35,12 +35,12 @@ class Repository < ApplicationRecord
               if server.up?
                 PingStatus.new(
                     response_time: server.ping,
-                    message: 'OK'
+                    message: 'OK',
                 )
               else
                 PingStatus.new(
                     response_time: server.ping,
-                    message: 'FAIL'
+                    message: 'FAIL',
                 )
               end
             else
@@ -62,10 +62,13 @@ class Repository < ApplicationRecord
 
   def assign_deployments
     deployments_params.each do |deployments_param|
-      server = Server.find_or_create_by(url: deployments_param['url'])
+      server_ip = deployments_param['ip']
+      server = Server.find(ip: server_ip)
+      raise "Server with IP #{server_ip} not found."
       self.servers << server
-      deployment = Deployment.where(server_id: server.id, repository_id: id).first
+      deployment = deployments.find_by_server_id(server.id)
       deployment.kind = deployments_param['kind']
+      deployment.url = deployments_param['url']
       deployment.save
     end
   end

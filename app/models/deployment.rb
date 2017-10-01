@@ -12,7 +12,16 @@ class Deployment < ApplicationRecord
     {
         type: kind,
         url: server.url,
-        status: repository.status_json
+        status: status_json
+    }
+  end
+
+  def status_json
+    response = HTTParty.get(server.url)
+    {
+      responseTime: status.response_time,
+      code: response.code
+      response_time: response.headers["x-runtime"]
     }
   end
 end
