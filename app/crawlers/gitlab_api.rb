@@ -7,14 +7,14 @@ class GitlabAPI
   end
 
   def repository_details
-    request = "#{BASE_URL}projects/#{url}?statistics=true&private_token=#{ENV.fetch('PRIVATE_TOKEN')}"
+    request = GitlabAPI.build_query("projects/#{url}", 'statistics=true')
     response = HTTParty.get(request, timeout: 5)
     (JSON.parse response.body)
   end
 
   def self.repositories
     # TODO Handle more than 100 repos (100 is max from gitlab api)
-    request = "#{BASE_URL}projects?private_token=#{ENV.fetch('PRIVATE_TOKEN')}&per_page=100"
+    request = build_query('projects', 'per_page=100')
     response = HTTParty.get(request, timeout: 5)
     (JSON.parse response.body)
   end
@@ -23,5 +23,11 @@ class GitlabAPI
     repos_db = Repository.all.map(&:url)
     repos_gitlab = repositories.map{ |repo| repo['path_with_namespace']}
     (repos_gitlab - repos_db).sort_by{ |r| r.downcase}
+  end
+
+  private
+
+  def self.build_query(query, params='')
+    "#{BASE_URL}#{query}?#{params}&private_token=#{ENV.fetch('PRIVATE_TOKEN')}"
   end
 end
