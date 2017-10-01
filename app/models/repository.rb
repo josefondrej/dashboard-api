@@ -63,7 +63,7 @@ class Repository < ApplicationRecord
   def assign_deployments
     deployments_params.each do |deployments_param|
       begin
-        server_ip = IPSocket::getaddress deployments_param['url']
+        server_ip = IPSocket::getaddress deployments_param['url'].gsub(/http(s){0,1}:\/\//, '')
       rescue
         raise "Url '#{deployments_param['url']}' could not be found."
       end
