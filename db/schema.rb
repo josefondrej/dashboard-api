@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171001093103) do
+ActiveRecord::Schema.define(version: 20171001104506) do
 
   create_table "deployments", force: :cascade do |t|
     t.integer "repository_id", null: false
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20171001093103) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["url"], name: "index_repositories_on_url", unique: true
   end
 
   create_table "servers", force: :cascade do |t|
