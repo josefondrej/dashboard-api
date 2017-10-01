@@ -43,15 +43,19 @@ module V1
     end
 
     params do
-      requires :url, type: String, desc: 'Server URL'
-      requires :name, type: String, desc: 'Server name'
+      requires :server, type: Hash do
+        requires :ip, type: String, desc: 'Server URL'
+        requires :name, type: String, desc: 'Server name'
+        optional :description, type: String, desc: 'Server URL'
+      end
     end
     post '/servers/' do
 
       begin
         server = Server.new(
-          url: params[:url],
-          name: params[:name]
+          ip: params[:server][:ip],
+          name: params[:server][:name],
+          description: params[:server][:description] || 'no description'
         )
 
         if server.save
