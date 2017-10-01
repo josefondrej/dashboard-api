@@ -35,8 +35,7 @@ ActiveRecord::Schema.define(version: 20171001104506) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ip"
-    t.string "description", default: "no description"
-    t.index ["ip"], name: "index_servers_on_ip", unique: true
+    t.string "description"
   end
 
 end

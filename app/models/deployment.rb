@@ -11,9 +11,13 @@ class Deployment < ApplicationRecord
   def to_json
     {
         type: kind,
-        url: url,
+        url: self.url,
         status: status_json
     }
+  end
+
+  def clean_url
+    "http://#{url}" unless url.match?(/http(s){0,1}/)
   end
 
   def status_json
@@ -23,7 +27,7 @@ class Deployment < ApplicationRecord
       responseTime: -1
     } unless url
 
-    response = HTTParty.get(url)
+    response = HTTParty.get(clean_url)
     {
       ping: status.response_time,
       code: response.code,
