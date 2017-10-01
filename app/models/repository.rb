@@ -9,43 +9,43 @@ class Repository < ApplicationRecord
 
   def to_json
     {
-      id: id,
-      name: name,
-      status: status_json,
-      detailUrl: "repositories/#{id}",
-      productionUrl: production_deployment&.url || ''
+        id: id,
+        name: name,
+        status: status_json,
+        detailUrl: "repositories/#{id}",
+        productionUrl: production_deployment&.url || ''
     }
   end
 
   def to_json_extended
     gitlab = GitlabAPI.new(url: url)
     to_json.merge({
-        description: description,
-        url: url,
-        lastActivity: gitlab.repository_details['last_activity_at'],
-        deployments: deployments.map(&:to_json),
-        merge_requests_count: gitlab.count_merge_requests,
-        open_merge_requests_count: gitlab.count_open_merge_requests
-    })
+                      description: description,
+                      url: url,
+                      lastActivity: gitlab.repository_details['last_activity_at'],
+                      deployments: deployments.map(&:to_json),
+                      merge_requests_count: gitlab.count_merge_requests,
+                      open_merge_requests_count: gitlab.count_open_merge_requests
+                  })
   end
 
   def status_json
     status = if production_deployment
-              server = production_deployment.server
-              if server.up?
-                PingStatus.new(
-                    response_time: server.ping,
-                    message: 'OK',
-                )
-              else
-                PingStatus.new(
-                    response_time: server.ping,
-                    message: 'FAIL',
-                )
-              end
-            else
-              PingStatus.new(message: 'NO_PRODUCTION')
-            end
+               server = production_deployment.server
+               if server.up?
+                 PingStatus.new(
+                     response_time: server.ping,
+                     message: 'OK',
+                 )
+               else
+                 PingStatus.new(
+                     response_time: server.ping,
+                     message: 'FAIL',
+                 )
+               end
+             else
+               PingStatus.new(message: 'NO_PRODUCTION')
+             end
 
     {
         responseTime: status.response_time,
@@ -62,8 +62,14 @@ class Repository < ApplicationRecord
 
   def assign_deployments
     deployments_params.each do |deployments_param|
-      server_ip = deployments_param['serverIp']
-      server = Server.find_by_ip(server_ip)
+      begin
+        server_ip = IPSocket::getaddress deployments_param['url']
+      rescue
+        raise "Url '#{deployments_param['url']}' could not be found."
+      end
+      server = Server.find_or_create_by(ip: server_ip) do |s|
+        s.name = "#{name} (#{deployments_param['kind']})"
+      end
       raise "Server with IP #{server_ip} not found." unless server
       self.servers << server
       deployment = deployments.find_by_server_id(server.id)
