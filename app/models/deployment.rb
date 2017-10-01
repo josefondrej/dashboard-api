@@ -29,7 +29,7 @@ class Deployment < ApplicationRecord
 
     response = HTTParty.get(clean_url)
     {
-      ping: status.response_time,
+      ping: server.ping,
       code: response.code,
       responseTime: response.headers["x-runtime"]
     }
