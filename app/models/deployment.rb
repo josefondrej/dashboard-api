@@ -17,11 +17,17 @@ class Deployment < ApplicationRecord
   end
 
   def status_json
+    return {
+      ping: -1,
+      code: 500,
+      responseTime: -1
+    } unless url
+
     response = HTTParty.get(url)
     {
-      responseTime: status.response_time,
+      ping: status.response_time,
       code: response.code,
-      response_time: response.headers["x-runtime"]
+      responseTime: response.headers["x-runtime"]
     }
   end
 end
